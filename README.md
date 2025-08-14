@@ -56,29 +56,6 @@ This extension currently accepts these parameters:
 
 All parameters can only be modified by SIGHUP, so must exist in `postgresql.conf`, `postgresql.auto.conf`, or a file included by one of these.
 
-## Usage
-
-This extension currently only provides one view, and one function.
-
-The `get_all_smaps()` function provides the PID of each backend along with statistics for every registered memory address range listed in `/proc/[pid]/smaps`. It can only be executed by superusers, or users who are members of the `pg_read_all_stats` role.
-
-Each memory address header contributes the fields as described in the [proc_pid_maps](https://www.man7.org/linux/man-pages/man5/proc_pid_maps.5.html) documentation. The remaining fields are described in the [proc_pid_smaps](https://www.man7.org/linux/man-pages/man5/proc_pid_smaps.5.html) manual.
-
-Since it's more common to aggregate the memory readings rather than studying each individual memory address range, this extension also supplies the `smap_summary` view. It removes the following fields which are part of the address range header:
-
-- `start_address`
-- `end_address`
-- `permissions`
-- `byte_offset`
-- `dev_major`
-- `dev_minor`
-- `inode`
-- `sys_path`
-
-Then it aggregates the remaining columns as sums by PID.
-
-Aside from the header columns, `thp_eligible`, and `vm_flags`, all other columns are expressed in kilobytes, as described by the smaps documentation.
-
 ## Discussion
 
 This extension may act as a learning exercise or skeleton for writing Postgres extensions which do the following:
